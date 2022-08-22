@@ -9,8 +9,15 @@ FROM extension-builder as ext
 ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20210902
 ENV PHP_CONFIG_DIR /usr/local/etc/php/conf.d
 
-RUN pecl install msgpack && \
-    pecl install -D 'enable-redis-msgpack="yes"' redis && \
+ENV EXT_MSGPACK_VERSION 2.2.0RC1
+
+RUN curl -L https://github.com/msgpack/msgpack-php/archive/refs/tags/msgpack-${EXT_MSGPACK_VERSION}.tar.gz | tar xz \
+    && cd msgpack-php-msgpack-${EXT_MSGPACK_VERSION} \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && pecl install -D 'enable-redis-msgpack="yes"' redis && \
     cp `php-config --extension-dir`/msgpack.so /tmp/msgpack.so && \
     cp `php-config --extension-dir`/redis.so /tmp/redis.so && \
     echo "extension="${PHP_EXT_DIR}"/msgpack.so" > /tmp/ext-msgpack.ini && \
