@@ -1,12 +1,13 @@
-FROM php:8.1-cli-alpine3.16 as extension-builder
+FROM php:8.2-cli-alpine3.16 as extension-builder
 
 MAINTAINER Pecherskiy Valeriy <pecherskiy.v@yandex.ru>
 LABEL org.opencontainers.image.authors="Pecherskiy Valeriy <pecherskiy.v@yandex.ru>"
 
 RUN apk update && apk --no-cache add pcre-dev ${PHPIZE_DEPS}
+RUN apk add --no-cache linux-headers
 
 FROM extension-builder as ext
-ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20210902
+ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20220829
 ENV PHP_CONFIG_DIR /usr/local/etc/php/conf.d
 
 #############################################################################
@@ -23,7 +24,7 @@ RUN cp `php-config --extension-dir`/sockets.so /tmp/sockets.so && \
 
 # Build the final image with just the files we need
 FROM scratch as openswoole
-ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20210902
+ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20220829
 ENV PHP_CONFIG_DIR /usr/local/etc/php/conf.d
 
 # Copy things we installed to the final image
@@ -33,8 +34,8 @@ COPY --from=ext /tmp/ext-sockets.ini ${PHP_CONFIG_DIR}/ext-sockets.ini
 #############################################################################
 # BUILD:
 #
-# docker build -t pecherskiy/php81-sockets .
+# docker build -t pecherskiy/php82-sockets .
 #
-# docker push pecherskiy/php81-sockets
+# docker push pecherskiy/php82-sockets
 #
 #############################################################################
