@@ -18,6 +18,8 @@ RUN set -ex \
     && if [ `pear config-get ext_dir` != ${PHP_EXT_DIR} ]; then echo PHP_EXT_DIR must be `pear config-get ext_dir` && exit 1; fi \
     && apk add openssl-dev \
     && docker-php-ext-install sockets \
+    && docker-php-ext-install pdo \
+    && docker-php-ext-install pdo_mysql \
     && curl -L https://github.com/openswoole/swoole-src/archive/refs/tags/v${EXT_OPENSWOOLE_VERSION}.tar.gz | tar xz \
     && cd ext-openswoole-${EXT_OPENSWOOLE_VERSION} \
     && phpize \
@@ -26,6 +28,7 @@ RUN set -ex \
       --enable-openssl \
       --enable-sockets \
       --enable-swoole-json \
+      --enable-mysqlnd \
     && make \
     && make install
 
@@ -47,15 +50,17 @@ ENV PHP_CONFIG_DIR /usr/local/etc/php/conf.d
 COPY --from=ext /tmp/openswoole.so ${PHP_EXT_DIR}/openswoole.so
 #COPY --from=ext /tmp/opcache.so ${PHP_EXT_DIR}/opcache.so
 #COPY --from=ext /tmp/sodium.so ${PHP_EXT_DIR}/sodium.so
+#COPY --from=ext /tmp/sockets.so ${PHP_EXT_DIR}/sockets.so
 COPY --from=ext /tmp/ext-openswoole.ini ${PHP_CONFIG_DIR}/ext-openswoole.ini
 #COPY --from=ext /tmp/ext-opcache.ini ${PHP_CONFIG_DIR}/ext-opcache.ini
 #COPY --from=ext /tmp/ext-sodium.ini ${PHP_CONFIG_DIR}/ext-sodium.ini
+#COPY --from=ext /tmp/ext-sockets.ini ${PHP_CONFIG_DIR}/ext-sockets.ini
 
 #############################################################################
 # BUILD:
 #
-# docker build -t pecherskiy/php82-openswoole .
+# docker build -t pecherskiy/php82-openswoole-mysql .
 #
-# docker push pecherskiy/php82-openswoole
+# docker push pecherskiy/php82-openswoole-mysql
 #
 #############################################################################

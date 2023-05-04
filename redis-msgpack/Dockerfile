@@ -1,9 +1,9 @@
-FROM php:8.2-cli-alpine3.16 as extension-builder
+FROM php:8.2-cli-alpine3.17 as extension-builder
 
 MAINTAINER Pecherskiy Valeriy <pecherskiy.v@yandex.ru>
 LABEL org.opencontainers.image.authors="Pecherskiy Valeriy <pecherskiy.v@yandex.ru>"
 
-RUN apk update && apk --no-cache add pcre-dev ${PHPIZE_DEPS}
+RUN apk update && apk add --update linux-headers && apk --no-cache add pcre-dev ${PHPIZE_DEPS}
 
 FROM extension-builder as ext
 ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20220829

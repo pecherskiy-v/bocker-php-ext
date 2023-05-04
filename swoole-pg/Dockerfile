@@ -16,7 +16,9 @@ ENV EXT_OPENSWOOLE_VERSION 22.0.0
 
 RUN set -ex \
     && if [ `pear config-get ext_dir` != ${PHP_EXT_DIR} ]; then echo PHP_EXT_DIR must be `pear config-get ext_dir` && exit 1; fi \
-    && apk add openssl-dev \
+    && apk add postgresql-dev openssl-dev \
+    && docker-php-ext-install pdo \
+    && docker-php-ext-install pdo_pgsql \
     && docker-php-ext-install sockets \
     && curl -L https://github.com/openswoole/swoole-src/archive/refs/tags/v${EXT_OPENSWOOLE_VERSION}.tar.gz | tar xz \
     && cd ext-openswoole-${EXT_OPENSWOOLE_VERSION} \
@@ -26,6 +28,7 @@ RUN set -ex \
       --enable-openssl \
       --enable-sockets \
       --enable-swoole-json \
+      --with-postgres \
     && make \
     && make install
 
@@ -54,8 +57,8 @@ COPY --from=ext /tmp/ext-openswoole.ini ${PHP_CONFIG_DIR}/ext-openswoole.ini
 #############################################################################
 # BUILD:
 #
-# docker build -t pecherskiy/php82-openswoole .
+# docker build -t pecherskiy/php82-openswoole-pg .
 #
-# docker push pecherskiy/php82-openswoole
+# docker push pecherskiy/php82-openswoole-pg
 #
 #############################################################################

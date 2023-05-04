@@ -10,31 +10,30 @@ ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20220829
 ENV PHP_CONFIG_DIR /usr/local/etc/php/conf.d
 
 #############################################################################
-# section: sockets
+# section: MySQL
 #############################################################################
-RUN set -ex \
-    && if [ `pear config-get ext_dir` != ${PHP_EXT_DIR} ]; then echo PHP_EXT_DIR must be `pear config-get ext_dir` && exit 1; fi \
-    && docker-php-ext-install sockets
+ENV EXT_VERSION 1.0.2
 
-RUN cp `php-config --extension-dir`/sockets.so /tmp/sockets.so && \
-    echo "extension="${PHP_EXT_DIR}"/sockets.so" > /tmp/ext-sockets.ini
+RUN docker-php-ext-install pdo \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-source delete \
+    && apk del pcre-dev ${PHPIZE_DEPS}
 
-#RUN ls -al `php-config --extension-dir` && sleep 555
 
 # Build the final image with just the files we need
-FROM scratch as openswoole
+FROM scratch as mysql
 ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20220829
 ENV PHP_CONFIG_DIR /usr/local/etc/php/conf.d
 
 # Copy things we installed to the final image
-COPY --from=ext /tmp/sockets.so ${PHP_EXT_DIR}/sockets.so
-COPY --from=ext /tmp/ext-sockets.ini ${PHP_CONFIG_DIR}/ext-sockets.ini
+COPY --from=ext ${PHP_EXT_DIR}/pdo_mysql.so ${PHP_EXT_DIR}/pdo_mysql.so
+COPY --from=ext ${PHP_CONFIG_DIR}/docker-php-ext-pdo_mysql.ini ${PHP_CONFIG_DIR}/ext-mysql.ini
 
 #############################################################################
 # BUILD:
 #
-# docker build -t pecherskiy/php82-sockets .
+# docker build -t pecherskiy/php82-pdo_mysql .
 #
-# docker push pecherskiy/php82-sockets
+# docker push pecherskiy/php82-pdo_mysql
 #
 #############################################################################
