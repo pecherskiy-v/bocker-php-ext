@@ -37,4 +37,6 @@ COPY --from=ext /tmp/ext-sockets.ini ${PHP_CONFIG_DIR}/ext-sockets.ini
 #
 # docker push pecherskiy/php82-sockets
 #
+# docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t pecherskiy/php82-sockets .
+#
 #############################################################################

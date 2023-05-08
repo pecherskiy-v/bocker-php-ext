@@ -39,4 +39,6 @@ COPY --from=ext /tmp/ext-xdebug.ini ${PHP_CONFIG_DIR}/ext-xdebug.ini
 #
 # docker push pecherskiy/php82-xdebug
 #
+# docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t pecherskiy/php82-xdebug .
+#
 #############################################################################

@@ -58,4 +58,6 @@ COPY --from=ext /tmp/ext-openswoole.ini ${PHP_CONFIG_DIR}/ext-openswoole.ini
 #
 # docker push pecherskiy/php82-openswoole
 #
+# docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t pecherskiy/php82-openswoole .
+#
 #############################################################################

@@ -41,4 +41,6 @@ COPY --from=ext /tmp/ext-redis.ini ${PHP_CONFIG_DIR}/ext-redis.ini
 #
 # docker push pecherskiy/php82-redis-msgpack
 #
+# docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t pecherskiy/php82-redis-msgpack .
+#
 #############################################################################

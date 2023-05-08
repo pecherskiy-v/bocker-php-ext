@@ -39,4 +39,6 @@ COPY --from=ext /tmp/ext-inotify.ini ${PHP_CONFIG_DIR}/ext-inotify.ini
 #
 # docker push pecherskiy/php82-inotify
 #
+# docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t pecherskiy/php82-inotify .
+#
 #############################################################################

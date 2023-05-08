@@ -36,4 +36,6 @@ COPY --from=ext ${PHP_CONFIG_DIR}/docker-php-ext-pdo_mysql.ini ${PHP_CONFIG_DIR}
 #
 # docker push pecherskiy/php82-pdo_mysql
 #
+# docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t pecherskiy/php82-pdo_mysql .
+#
 #############################################################################
