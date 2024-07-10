@@ -11,7 +11,9 @@ ENV PHP_CONFIG_DIR=/usr/local/etc/php/conf.d
 #############################################################################
 # section: gd
 #############################################################################
-RUN apk update && apk --no-cache add pcre-dev ${PHPIZE_DEPS} zlib libpng libpng-dev \
+RUN apk update && apk --no-cache add pcre-dev ${PHPIZE_DEPS} zlib \
+    libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev \
+    && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd \
     && docker-php-source delete \
     && apk del pcre-dev ${PHPIZE_DEPS}
